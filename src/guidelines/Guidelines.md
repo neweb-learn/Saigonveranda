@@ -1,90 +1,97 @@
-# Project Guidelines & Coding Structure
+# Project Guidelines: The Saigon Veranda
 
-This document outlines the architecture, coding standards, and structural patterns for "The Saigon Veranda" web application. It is intended to guide LLMs and developers in maintaining consistency across the codebase.
+This document serves as the source of truth for "The Saigon Veranda" web application. It provides the architectural blueprint, design system, and coding standards required for LLMs and developers to maintain consistency and reuse existing patterns.
 
-## 1. Tech Stack
+## 1. Project Overview
 
-- **Framework**: React (Functional Components, Hooks)
-- **Styling**: Tailwind CSS (v4.0)
-- **Routing**: react-router-dom
-- **Animations**: motion/react (Imported as `motion`)
-- **Icons**: lucide-react
-- **Components**: Shadcn UI (located in `/components/ui`)
-- **Grid Layouts**: react-responsive-masonry
+"The Saigon Veranda" is a restaurant website concept blending Vietnamese street food culture with Indochine aesthetics. The site is informational (Menu, Story, Gallery, Reservations) and strictly non-transactional (no e-commerce).
 
-## 2. Directory Structure
+**Key Aesthetics:**
+- **Theme**: "Crisp Herbs & Slow-Cooked Broth."
+- **Vibe**: Open-air courtyard, rustic yet elegant, warm, welcoming.
+- **Visuals**: High-quality photography, masonry grids, organic transitions.
+
+## 2. Tech Stack
+
+- **Core**: React (Functional Components + Hooks).
+- **Styling**: Tailwind CSS v4.0.
+- **Routing**: `react-router-dom` (Client-side routing).
+- **Animation**: `motion/react` (Imported as `motion`).
+- **Icons**: `lucide-react`.
+- **Layouts**: `react-responsive-masonry` (Grid systems).
+- **UI Library**: Shadcn UI (Located in `/components/ui`).
+
+## 3. Design System & Tokens
+
+### Colors
+- **Background Cream**: `#FEFDF5` (Primary canvas).
+- **Herb Green**: 
+  - Dark: `#2E7D32` (Headings, borders).
+  - Light/Accent: `#43A047` (Hovers, highlights).
+- **Chili Red**: `#D32F2F` (Price tags, CTAs, accents).
+- **Text**: Stone grays (`text-stone-900` for headings, `text-stone-600` for body).
+
+### Typography
+Defined via CSS variables in `Layout.tsx` and `globals.css`.
+- **Headings**: `font-serif` (Cormorant Garamond) - Elegant, high-contrast serif.
+- **Body**: `font-sans` (Montserrat) - Clean, geometric sans-serif.
+
+### UI Patterns
+- **Buttons**: Rounded corners (`rounded-xl` or pill-shaped), typically filled Green or outlined Stone.
+- **Images**: `rounded-xl` or `rounded-2xl` with `shadow-sm`. Hover effects often include subtle scaling (`scale-105`).
+- **Cards**: Minimalist, often transparent or white with soft borders.
+
+## 4. Project Structure
 
 ```text
 /
-├── App.tsx                 # Main entry point, handles Routing
-├── lib/
-│   └── utils.ts            # CN utility for class merging
-├── data/
-│   └── content.ts          # Centralized text and image content
+├── App.tsx                 # Routing configuration (Routes, Route)
 ├── components/
-│   ├── Layout.tsx          # Main layout wrapper (Nav, Footer context)
-│   ├── Hero.tsx            # Landing page hero
-│   ├── pages/              # Route-specific page components
-│   │   ├── HomePage.tsx
-│   │   ├── MenuPage.tsx
-│   │   ├── StoryPage.tsx
-│   │   ├── GalleryPage.tsx
-│   │   ├── VisitPage.tsx
-│   │   └── BookPage.tsx
-│   ├── ui/                 # Reusable Shadcn UI primitives (Do not modify logic)
-│   └── figma/              # Figma specific utilities
+│   ├── Layout.tsx          # Global wrapper (Navbar, Font Styles)
+│   ├── ScrollToTop.tsx     # Utility to reset scroll on route change
+│   ├── pages/              # Full page views (HomePage, MenuPage, etc.)
+│   ├── ui/                 # Shadcn UI components (Do not modify logic)
+│   └── [Features].tsx      # Section components (Hero, Process, etc.)
+├── data/
+│   └── content.ts          # Centralized content (Text, Image URLs)
 └── styles/
-    └── globals.css         # Global Tailwind directives & Font definitions
+    └── globals.css         # Tailwind imports and base styles
 ```
 
-## 3. Core Patterns & Rules
+## 5. Coding Standards
 
-### Imports
-- **Strict Relative Paths**: ALWAYS use relative paths (e.g., `../../components/ui/Button`).
-- **No Aliases**: Do NOT use `@/` aliases; they will break the build.
-- **External Packages**: Import directly from the package name.
-  - *Exception*: `motion/react` should be used for animations.
+### Data Driven
+- **Centralized Source**: All static text, menu items, and image URLs must reside in `/data/content.ts`.
+- **Usage**: Components should import `siteContent` from `../data/content` to render data. Avoid hardcoding text in components.
 
-### Content Management (`/data/content.ts`)
-- All static text, image URLs, and structured data (menu items, features) must reside in `siteContent` object.
-- Components should accept data via props or import `siteContent` directly if global.
-- **Goal**: Decouple content from presentation to allow easy updates.
+### Styling
+- **Tailwind First**: Use utility classes for everything.
+- **Overrides**: Only use `style={{ }}` for dynamic values (e.g., background images from data).
+- **Typography**: Always use `font-serif` for headings and `font-sans` for body text.
 
-### Components
-- **Functional**: Use functional components with named exports.
-- **Shadcn UI**: Use existing components in `/components/ui` (e.g., Button, Input) before creating custom ones.
-- **Lego Philosophy**: Build pages (`/components/pages`) by composing smaller, distinct sections (like `Hero`, `MenuHighlights`, `Process`).
+### Images
+- **Source**: Use Unsplash for placeholders.
+- **Masonry**: Use `react-responsive-masonry` for image galleries to maintain the "courtyard" aesthetic.
+- **Motion**: Images often enter with a fade-up animation using `motion.div`.
 
-### Styling & Typography
-- **Fonts**:
-  - Headers: `font-serif` (Cormorant Garamond)
-  - Body: `font-sans` (Montserrat)
-- **Colors**: Use Tailwind utility classes.
-  - Primary Green: `#2E7D32` / `#43A047`
-  - Accent Red: `#D32F2F`
-  - Background Cream: `#FEFDF5`
-- **Tailwind**: Do not create a `tailwind.config.js`. Use `globals.css` for CSS variables if strictly necessary, but prefer utility classes.
+### Routing
+- **Library**: `react-router-dom`.
+- **Links**: Use `<Link to="/path">` instead of `<a>` tags for internal navigation.
+- **Scroll**: Ensure `ScrollToTop` is active in `App.tsx`.
 
-### Navigation & Routing
-- Use `Link` from `react-router-dom` for internal navigation.
-- Ensure `ScrollToTop` component is active in `App.tsx` to reset scroll position on route change.
+### Imports (CRITICAL)
+- **Relative Paths Only**: ALWAYS use relative paths (e.g., `../../components/ui/Button`).
+- **No Aliases**: NEVER use `@/` (e.g., `@/components/...`). This causes build failures.
 
-## 4. LLM Generation Instructions
+## 6. Extension Guidelines
 
-When generating new code or modifying existing files:
-
-1.  **Check Existing**: Look for existing components in `/components/ui` to avoid duplication.
-2.  **Consistenty**: Match the "Indochine/Street Food" aesthetic (Cream, Green, Serif fonts).
-3.  **Mock Data**: If new content is needed, add it to `data/content.ts` first (or mock it inline if temporary), then reference it.
-4.  **Images**: Use `unsplash_tool` to find high-quality, relevant images.
-5.  **Motion**: Use `motion.div` for entrance animations (fade up, stagger).
-
-## 5. Key Components
-
-- **Layout**: Wraps pages, contains the sticky Navigation and Font definitions.
-- **Hero**: Full-width image/video background with overlay text.
-- **Masonry Gallery**: Uses `react-responsive-masonry` for organic image grids.
-- **Forms**: Use standard HTML inputs styled with Tailwind or Shadcn `Input`/`Select` components.
-
----
-*Auto-generated for project context preservation.*
+1.  **Adding Pages**: 
+    - Create a new component in `/components/pages/`.
+    - Add a Route in `App.tsx`.
+    - Update `siteContent.navigation` in `/data/content.ts` if it needs to appear in the nav.
+2.  **New Components**:
+    - Check `/components/ui` first.
+    - Compose larger sections using atomic UI components.
+3.  **Animations**:
+    - Default Entrance: `initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}`.
+    - Transitions: Smooth, duration ~0.5s to 0.8s.
